@@ -1,11 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import FixedMenuLayout from './Dashboard/Dashboard'
+import Dashboard from './Dashboard/Dashboard'
 
 function App() {
   return (
-    <FixedMenuLayout />
+    <Dashboard />
   )
 }
 

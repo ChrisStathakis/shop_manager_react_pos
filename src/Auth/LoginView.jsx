@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
+import {lookupOptionsWithToken} from '../GenericView/tools';
+import {LOGIN_ENDPOINT, CSRF_ENPOINT} from '../GenericView/constants'; 
 
 class LoginView extends React.Component {
 
@@ -41,6 +43,12 @@ class LoginView extends React.Component {
           this.setState({
             username: json.user.username,
             errors: {}
+          })
+          const token = localStorage.getItem('token')
+          fetch(CSRF_ENPOINT, lookupOptionsWithToken(token))
+          .then(resp => resp.json())
+          .then(respData =>{
+            localStorage.setItem('csrf_token', respData.token)
           })
         })
     }

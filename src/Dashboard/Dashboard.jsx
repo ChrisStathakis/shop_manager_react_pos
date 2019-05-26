@@ -1,93 +1,86 @@
-import React from 'react'
+import React from 'react';
+import {withRouter} from 'react-router-dom'
 import {
   Container,
-  Divider,
-  Dropdown,
-  Grid,
   Header,
-  Image,
-  List,
-  Menu,
-  Segment,
-} from 'semantic-ui-react'
-import Navbar from '../GenericView/Navbar'
+  GridRow,
+  Button
+} from 'semantic-ui-react';
+import {Redirect} from 'react-router'
+import Navbar from '../GenericView/Navbar';
+import {ORDER_LIST_ENDPOINT, ORDER_CREATE_ENDPOINT} from '../GenericView/constants';
+import {lookupOptionsWithToken, lookupOptionPOST} from '../GenericView/tools';
+import OrderTable from './Components';
 
-const FixedMenuLayout = () => (
-  <div>
-    <Navbar />
-    <Container text style={{ marginTop: '7em' }}>
-      <Header as='h1'>Semantic UI React Fixed Template</Header>
-      <p>This is a basic fixed menu template using fixed size containers.</p>
-      <p>
-        A text container is used for the main container, which is useful for single column layouts.
-      </p>
+class Dashboard extends React.Component{
 
-      <Image src='/images/wireframe/media-paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-    </Container>
+  
+  constructor(props) {
+    super(props);
+    
+    this.handleNewOrder = this.handleNewOrder.bind(this)
+    this.state = {
+      orders: [],
+      token: localStorage.getItem('token'),
+      doneLoading: false
+    }
+  }
+  
+  loadOrders() {
+    const thisComp = this;
+    const token = this.state.token;
+    fetch(ORDER_LIST_ENDPOINT, lookupOptionsWithToken(token))
+        .then(resp=>resp.json())
+        .then(respData=>{
+            thisComp.setState({
+                orders: respData.results,
+                doneLoading: true
+            })
+        })
+  }
 
-    <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em' }}>
-      <Container textAlign='center'>
-        <Grid divided inverted stackable>
-          <Grid.Column width={3}>
-            <Header inverted as='h4' content='Group 1' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-          <Grid.Column width={3}>
-            <Header inverted as='h4' content='Group 2' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-          <Grid.Column width={3}>
-            <Header inverted as='h4' content='Group 3' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-          <Grid.Column width={7}>
-            <Header inverted as='h4' content='Footer Header' />
-            <p>
-              Extra space for a call to action inside the footer that could help re-engage users.
-            </p>
-          </Grid.Column>
-        </Grid>
+  handleNewOrder(event) {
+    event.preventDefault();
+    const thisComp = this;
+    const token = this.state.token;
+    const csrf_token = localStorage.getItem('csrf_token');
+    const data = {
+      title: 'New Order',
+    }
+    fetch(ORDER_CREATE_ENDPOINT,  lookupOptionPOST(token, csrf_token, data))
+    .then(resp=> resp.json())
+    .then(
+      responseData=>{
+        const new_id = responseData.id;
+        console.log('works', new_id)
+      }
+    )
+  }
 
-        <Divider inverted section />
-        <Image centered size='mini' src='/logo.png' />
-        <List horizontal inverted divided link size='small'>
-          <List.Item as='a' href='#'>
-            Site Map
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Contact Us
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Terms and Conditions
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Privacy Policy
-          </List.Item>
-        </List>
-      </Container>
-    </Segment>
-  </div>
-)
+  componentDidMount() {
+    this.loadOrders()
+  }
 
-export default FixedMenuLayout
+  render() {
+    const {orders, doneLoading} = this.state;
+    console.log(orders)
+    return (
+      <div>
+        <Navbar />
+        <Container style={{ marginTop: '7em' }}>
+          <Header as='h1'>Works!</Header>
+          <GridRow>
+            <Button primary onClick={this.handleNewOrder}>Νέα Παραγγελία</Button>
+          </GridRow>
+          {doneLoading ?
+          <OrderTable orders={orders} />
+          :
+          <p>No data</p>}
+        </Container>
+      </div>
+    )
+  }
+}
+
+
+export default withRouter(Dashboard)

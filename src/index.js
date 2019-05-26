@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import './index.css';
 import AuthView from './Auth/Auth';
 import App from './App';
+import OrderView from './Orders/OrderView'
 import * as serviceWorker from './serviceWorker';
 
 
@@ -38,6 +39,7 @@ class App_ extends React.Component {
             <BrowserRouter>
                 <Switch>
                     <PrivateRoute exact path='/' component={App} />
+                    <PrivateRoute exact path='/orders/:id' component={OrderView} />
                     <Route exact path='/login/' component={AuthView} />
                 </Switch>
             </BrowserRouter>
