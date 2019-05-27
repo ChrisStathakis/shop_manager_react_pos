@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom'
-import {ORDER_UPDATE_ENDPOINT, ORDER_ITEM_LIST_CREATE_ENDPOINT} from '../GenericView/constants'
+import {ORDER_UPDATE_ENDPOINT, ORDER_ITEM_LIST_CREATE_ENDPOINT, PRODUCT_LIST_ENPOINT} from '../GenericView/constants'
 import {lookupOptionsWithToken} from '../GenericView/tools';
+import Navbar from '../GenericView/Navbar';
+import {Container, Header} from 'semantic-ui-react';
+import {ProductView} from './Components';
 
 
 class OrderView extends Component  {
@@ -13,10 +16,26 @@ class OrderView extends Component  {
             token: localStorage.getItem('token'),
             order: null,
             order_items: [],
+            products: [],
             doneLoading: false
         }
     }
 
+    loadProducts(search_name) {
+        const {token} = this.state;
+        const thisComp = this;
+        let endpoint = PRODUCT_LIST_ENPOINT
+        if (search_name.length > 0 ) {
+            endpoint = PRODUCT_LIST_ENPOINT + '?q=' + search_name
+        }
+        fetch(endpoint, lookupOptionsWithToken(token))
+        .then(resp=>resp.json())
+        .then(respData => {
+            thisComp.setState({
+                products: respData.results
+            })
+        })
+    }
 
     loadOrder(id) {
         const token = this.state.token;
@@ -46,16 +65,24 @@ class OrderView extends Component  {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params)
-        const {id} = this.props.match.params
+        const {id} = this.props.match.params;
         this.loadOrder(id);
+        this.loadOrderItems(id);
       
     }
 
     render() {
-
+        const {order, doneLoading, products} = this.state;
         return (
-            <p>Works!</p>
+            <div>
+        <Navbar />
+        <Container style={{ marginTop: '7em' }}>
+            {doneLoading ? 
+                <Header as='h1'>{order.title} - Date {order.date_expired}</Header>:<p>No data</p> }
+            <ProductView products={products} handleSearch={this.loadProducts} />
+         
+        </Container>
+      </div>
         )
     }
 }

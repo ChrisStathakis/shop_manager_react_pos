@@ -9,3 +9,5 @@ export const ORDER_UPDATE_ENDPOINT = HOST + 'orders/update/';
 export const ORDER_ITEM_LIST_CREATE_ENDPOINT = HOST + 'get-token/';
 export const ORDER_ITEM_UPDATE_ENPOINT = HOST + 'orders/update/';
 
+export const PRODUCT_LIST_ENPOINT = HOST + 'products/'
+
