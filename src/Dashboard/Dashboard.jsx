@@ -4,6 +4,7 @@ import {
   Container,
   Header,
   GridRow,
+  GridColumn,
   Button
 } from 'semantic-ui-react';
 import {Redirect} from 'react-router'
@@ -58,6 +59,7 @@ class Dashboard extends React.Component{
   }
 
   componentDidMount() {
+    console.log('token..', localStorage.getItem('token'))
     this.loadOrders()
   }
 
@@ -72,10 +74,18 @@ class Dashboard extends React.Component{
           <GridRow>
             <Button primary onClick={this.handleNewOrder}>Νέα Παραγγελία</Button>
           </GridRow>
-          {doneLoading ?
-          <OrderTable orders={orders} />
-          :
-          <p>No data</p>}
+          <GridRow>
+            <GridColumn>
+            {doneLoading && orders !== undefined ?
+              <OrderTable orders={orders} />
+              :
+              <p>No data</p>}
+            </GridColumn>
+            <GridColumn>
+
+            </GridColumn>
+          </GridRow>
+          
         </Container>
       </div>
     )

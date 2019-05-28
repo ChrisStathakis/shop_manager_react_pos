@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {GridRow, Header, Table, Input} from 'semantic-ui-react';
+import {GridRow, Header, Table, Input, Button} from 'semantic-ui-react';
 
 
 export class ProductView extends Component {
@@ -59,3 +59,46 @@ export class ProductView extends Component {
     }
 }
 
+
+class OrderItemsView extends Component {
+
+    render() {
+        const {orderr_items} = this.props;
+        return (
+            <div>
+                <GridRow>
+                    <Header as='h4'>Προϊόντα</Header>
+                    <Table>
+                        <Table.Header>
+                            <Table.HeaderCell>Τίτλος</Table.HeaderCell>
+                            <Table.HeaderCell>Ποσότητα</Table.HeaderCell>
+                            <Table.HeaderCell>Τιμή</Table.HeaderCell>
+                            <Table.HeaderCell>Συνολική Αξία</Table.HeaderCell>
+                            <Table.HeaderCell>Action</Table.HeaderCell>
+                        </Table.Header>
+                    </Table>
+                </GridRow>
+
+            </div>
+        )
+    }
+}
+
+class OrderItemTable extends Component {
+
+    render() {
+        const {item} = this.props;
+        return (
+            <Table.Row>
+                <Table.Cell>{item.title}</Table.Cell>
+                <Table.Cell>{item.qty}</Table.Cell>
+                <Table.Cell>{item.tag_value}</Table.Cell>
+                <Table.Cell>{item.tag_total_value}</Table.Cell>
+                <Table.Cell>
+                    <Button warning>Down</Button>
+                    <Button success>Up</Button>
+                </Table.Cell>
+            </Table.Row>
+        )
+    }
+}

@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom'
 import {ORDER_UPDATE_ENDPOINT, ORDER_ITEM_LIST_CREATE_ENDPOINT, PRODUCT_LIST_ENPOINT} from '../GenericView/constants'
 import {lookupOptionsWithToken} from '../GenericView/tools';
 import Navbar from '../GenericView/Navbar';
-import {Container, Header} from 'semantic-ui-react';
+import {Container, Header, GridColumn, GridRow} from 'semantic-ui-react';
 import {ProductView} from './Components';
 
 
@@ -79,7 +79,15 @@ class OrderView extends Component  {
         <Container style={{ marginTop: '7em' }}>
             {doneLoading ? 
                 <Header as='h1'>{order.title} - Date {order.date_expired}</Header>:<p>No data</p> }
-            <ProductView products={products} handleSearch={this.loadProducts} />
+            <GridRow>
+                <GridColumn>
+                    <ProductView products={products} handleSearch={this.loadProducts} />
+                </GridColumn>
+                <GridColumn>
+                    
+                </GridColumn>
+            </GridRow>
+            
          
         </Container>
       </div>
